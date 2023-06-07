@@ -14,19 +14,19 @@ namespace RecipeApplication
         public void RecipeDetails()
         {
             Console.Write("Enter the number of recipes you want to add: ");
-            int numRecipe = int.Parse(Console.ReadLine());
+            int numRecipe = int.Parse(Console.ReadLine()); //enter the number of recipe you want to add
 
-            for (int j = 1; j <= numRecipe; j++)
+            for (int j = 1; j <= numRecipe; j++) //loop until the numRecipe have details
             {
                 Console.Write("Enter the name of recipe " + j + ": ");
-                string recipeName = Console.ReadLine();
+                string recipeName = Console.ReadLine(); //enter the name of recipe
 
                 Recipe_Application recipe = new Recipe_Application(recipeName); //create new Recipe object with name provided by user
                 recipes.Add(recipe); //add recipe to generic collection of recipes
                 Console.Write("Enter the number of ingredients: ");
                 int numIngredients = int.Parse(Console.ReadLine());
 
-                for (int i = 0; i < numIngredients; i++)
+                for (int i = 0; i < numIngredients; i++) //loop until the numIngredients have details
                 {
                     Console.Write("Enter the name of ingredient {0}: ", (i + 1));
                     string ingredientName = Console.ReadLine();
@@ -99,7 +99,7 @@ namespace RecipeApplication
                 }
 
                 Console.Write("Enter the number of steps: ");
-                int numSteps = int.Parse(Console.ReadLine());
+                int numSteps = int.Parse(Console.ReadLine()); //enter the number step you'll need
 
                 for (int i = 0; i < numSteps; i++)
                 {
@@ -107,7 +107,7 @@ namespace RecipeApplication
                     string step = Console.ReadLine();
                     recipe.AddStep(step); //add step to recipe using method in Recipe class
                 }
-                Console.WriteLine("Recipe was successfully added");
+                Console.WriteLine("Recipe was successfully added"); //display the message if the recipe was successfully added
             }
         }
 
@@ -117,7 +117,8 @@ namespace RecipeApplication
             {
                 while (true)
                 {
-                    recipes.Sort();
+                    recipes.Sort(); //sort the recipe in alphabetical order
+                    //Prompt to choose from the below option provided
                     Console.WriteLine("\nSelect a recipe to view or enter 999 to quit: ");
 
                     for (int i = 0; i < recipes.Count; i++)
@@ -156,6 +157,7 @@ namespace RecipeApplication
             {
                 while (true)
                 {
+                    //Prompt to choose from the below option provided
                     Console.WriteLine("\nSelect a recipe to scale or enter 999 to quit: ");
 
                     for (int i = 0; i < recipes.Count; i++)
@@ -243,7 +245,7 @@ namespace RecipeApplication
             {
                 if (recipes.Count > 0)
                 {
-                    recipes.Clear();
+                    recipes.Clear(); //Clear all the recipe
                     Console.WriteLine("\nRecipe has been cleared succefully!");
                 }
                 else
@@ -259,8 +261,9 @@ namespace RecipeApplication
 
         public void Message()
         {
-                Console.Write("\nEnter 0 to quit or any number to display the selection bar of the recipes: ");
-                option = int.Parse(Console.ReadLine());
+            //Prompt to choose from the below option provided
+            Console.Write("\nEnter 0 to quit or any number to display the selection bar of the recipes: ");
+            option = int.Parse(Console.ReadLine());
 
                 
         }
@@ -269,6 +272,7 @@ namespace RecipeApplication
     public class Recipe_Application : IComparable<Recipe_Application> //implement IComparable to allow sorting of recipes by name
     {
         public string Name { get; set; }
+        public ingredientStore.CaloriesExceededEventHandler HandleCaloriesExceeded { get; private set; }
         private List<ingredientStore> ingredients = new List<ingredientStore>(); //generic collection to store ingredients
         private List<string> steps = new List<string>(); //generic collection to store steps 
 
@@ -280,7 +284,7 @@ namespace RecipeApplication
         public void AddIngredient(ingredientStore i)
         {
             ingredients.Add(i);
-            //i.CaloriesExceeded += HandleCaloriesExceeded; //subscribe to CaloriesExceeded event for each added ingredient
+            i.CaloriesExceeded += HandleCaloriesExceeded; //subscribe to CaloriesExceeded event for each added ingredient
         }
 
         public void AddStep(string s)
@@ -365,9 +369,7 @@ namespace RecipeApplication
 
         public event CaloriesExceededEventHandler CaloriesExceeded; //declare event
 
-        private bool showCaloriesExceededMessage; //new flag to control delegate message
-
-        public ingredientStore(string ingredintName, double quantity, string unit, int calories, string foodGroup, bool showCaloriesExceededMessage = true) //add flag defaulting to true
+        public ingredientStore(string ingredintName, double quantity, string unit, int calories, string foodGroup)
 
         {
             Name = ingredintName;
@@ -377,12 +379,6 @@ namespace RecipeApplication
             FoodGroup = foodGroup;
             OriginalCalories = calories;
             originalQuantity = quantity; //store original quantity for use in resetting
-
-            this.showCaloriesExceededMessage = showCaloriesExceededMessage; //store the flag
-            if (showCaloriesExceededMessage)
-            {
-                CaloriesExceeded += HandleCaloriesExceeded; //subscribe to CaloriesExceeded event if flag is true
-            }
 
         }
 
@@ -429,26 +425,6 @@ namespace RecipeApplication
         }
     }
 
-public class IngredientTests
-    {
-        public void TestCaloriesExceededEvent()
-        {
-            ingredientStore i = new ingredientStore("Sugar", 50, "g", 4, "Sweeteners");
-
-            bool caloriesExceededEventTriggered = false;
-
-            i.CaloriesExceeded += (sender, e) =>
-            {
-                caloriesExceededEventTriggered = true;
-            };
-
-            i.AddQuantity(30); //total calories should be 4 * 80 = 320, which exceeds limit
-
-            //Assert.IsTrue(caloriesExceededEventTriggered, "CaloriesExceeded event was not triggered"); //assert that the event was triggered
-        }
-    }
-
-
     class runClass
     {
         static void Main(string[] args)
@@ -466,7 +442,7 @@ public class IngredientTests
             try
             {
                 Console.Write("\t**********<Welcome to the Recipe Application>**********");
-                while (true) //loop to continue adding recipes
+                while (true) //loop to continue display menu
                 {
                     Console.Write("\nWhat would you like to do?\n1. Add a new recipe\n2. View the recipe details \n3. Scale recipe \n4. Reset recipe" +
                                   "\n5. Clear recipe \n6. Exit\nEnter your choice: ");
@@ -475,18 +451,23 @@ public class IngredientTests
                     switch (choice)
                     {
                         case 1:
+                            //dispaly the method from class Part2
                             part2.RecipeDetails();
                             break;
                         case 2:
+                            //dispaly the method from class Part2
                             part2.DisplayResults();
                             break;
                         case 3:
+                            //dispaly the method from class Part2
                             part2.ScaleRecipe();
                             break;
                         case 4:
+                            //dispaly the method from class Part2
                             part2.ResetQuantities();
                             break;
                         case 5:
+                            //dispaly the method from class Part2
                             part2.ClearRecipe();
                             break;
                         case 6:
